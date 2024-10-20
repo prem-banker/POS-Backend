@@ -17,7 +17,7 @@ const getUsers = async (req, res) => {
   return res.status(404).json({ message: "No users found" });
 };
 const createUser = async (req, res) => {
-  const { username, password , admin} = req.body;
+  const { username, password, admin } = req.body;
   let user;
   try {
     user = await User.findOne({ username: username });
@@ -28,8 +28,8 @@ const createUser = async (req, res) => {
     try {
       user = new User({
         username,
-        password: await bcrypt.hash(password, 12),
-        admin
+        password: password,
+        admin,
       });
       user.save();
     } catch (err) {
@@ -53,8 +53,9 @@ const login = async (req, res, next) => {
   if (!user) {
     return res.status(401).json({ message: "Invalid credentials " });
   }
+  console.log(password, user.password);
 
-  if (!(await bcrypt.compare(password, user.password))) {
+  if (!(password === user.password)) {
     return res.status(401).json({ message: "cannot crypt the password" });
   }
   let token;
@@ -72,22 +73,18 @@ const login = async (req, res, next) => {
 
 const deleteUser = async (req, res) => {
   const { id } = req.params;
-  console.log(id)
+  console.log(id);
   let user;
   try {
     user = await User.findOneAndDelete({ username: id });
   } catch (err) {
-    res
-    .status(401)
-    .json({ message:"error cannot delete this user" });
+    res.status(401).json({ message: "error cannot delete this user" });
   }
   if (user) {
-    console.log(user.username)
-    return res.status(201).json({message:"user have been deleted"})
+    console.log(user.username);
+    return res.status(201).json({ message: "user have been deleted" });
   }
-  return res
-    .status(401)
-    .json({ message:"error cannot delete this user" });
+  return res.status(401).json({ message: "error cannot delete this user" });
 };
 exports.getUsers = getUsers;
 exports.createUser = createUser;

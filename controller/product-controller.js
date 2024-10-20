@@ -6,10 +6,9 @@ var fs = require("fs");
 const getAllProduct = async (req, res) => {
   let product;
   try {
-    product = await Product.find().populate([
-      "productCategory",
-      "unitOfMeasure",
-    ]);
+    product = await Product.find()
+      .populate(["productCategory", "unitOfMeasure"])
+      .limit(20);
   } catch (err) {
     return res.status(404).json({ message: "No data found" });
   }
@@ -19,13 +18,17 @@ const getAllProduct = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-  const { productName, productCategory, unitOfMeasure, productPrice } =
-    req.body;
+  const {
+    productName,
+    productCategory,
+    unitOfMeasure,
+    productPrice,
+  } = req.body;
   const { id } = req.params;
   const image = req.file;
   let product;
-  let unit = await UnitOfMeasure.findOne({unitOfMeasureName:unitOfMeasure})
-  let cate = await Category.findOne({categoryName:productCategory})
+  let unit = await UnitOfMeasure.findOne({ unitOfMeasureName: unitOfMeasure });
+  let cate = await Category.findOne({ categoryName: productCategory });
   try {
     if (image) {
       product = await Product.findByIdAndUpdate(
@@ -33,7 +36,7 @@ const updateProduct = async (req, res) => {
         {
           productName,
           productCategory: cate,
-          unitOfMeasure:unit,
+          unitOfMeasure: unit,
           productPrice,
           productImage: image.path,
         },
@@ -47,8 +50,8 @@ const updateProduct = async (req, res) => {
         id,
         {
           productName,
-          productCategory:cate,
-          unitOfMeasure:unit,
+          productCategory: cate,
+          unitOfMeasure: unit,
           productPrice,
         },
         {
@@ -85,8 +88,12 @@ const deleteProduct = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-  const { productName, productCategory, unitOfMeasure, productPrice } =
-    req.body;
+  const {
+    productName,
+    productCategory,
+    unitOfMeasure,
+    productPrice,
+  } = req.body;
 
   const imagePath = req.file;
   let product;
