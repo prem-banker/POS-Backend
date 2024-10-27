@@ -6,9 +6,7 @@ const unitOfMeasureRoute = require("./routes/unitOfmeasure-route");
 const productRoute = require("./routes/product-route");
 const userRoute = require("./routes/user-route");
 const cartRoute = require("./routes/cart-route");
-
-
-
+const salesRoute = require("./routes/sales-route");
 
 let dotenv = require("dotenv").config();
 
@@ -27,19 +25,16 @@ app.use((req, res, next) => {
 });
 
 app.use(bodyParser.json());
-app.use('/uploads', express.static('uploads'));
-
-
+app.use("/uploads", express.static("uploads"));
 
 app.use("/category", categoryRoute);
 app.use("/unit", unitOfMeasureRoute);
 app.use("/product", productRoute);
 app.use("/user", userRoute);
 app.use("/cart", cartRoute);
-
+app.use("/sales", salesRoute);
 
 app.get("/", async (req, res) => {
-
   return res.status(404).json({ message: "Error page not Found 404" });
 });
 mongoose
