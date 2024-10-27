@@ -7,6 +7,7 @@ const productRoute = require("./routes/product-route");
 const userRoute = require("./routes/user-route");
 const cartRoute = require("./routes/cart-route");
 const salesRoute = require("./routes/sales-route");
+const inventoryRoute = require("./routes/inventory-route");
 
 let dotenv = require("dotenv").config();
 
@@ -33,6 +34,7 @@ app.use("/product", productRoute);
 app.use("/user", userRoute);
 app.use("/cart", cartRoute);
 app.use("/sales", salesRoute);
+app.use("/inventory", inventoryRoute);
 
 app.get("/", async (req, res) => {
   return res.status(404).json({ message: "Error page not Found 404" });
