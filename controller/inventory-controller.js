@@ -4,8 +4,16 @@ const Product = require("../model/Product");
 const getInventory = async (req, res) => {
   let inventory;
   try {
-    // Find all inventory items and populate related product details
-    inventory = await Inventory.find().populate("product").limit(20);
+    // Find all inventory items and populate related product and category details
+    inventory = await Inventory.find()
+      .populate({
+        path: "product",
+        populate: {
+          path: "productCategory", // Populate productCategory within product
+          model: "Category",
+        },
+      })
+      .limit(20);
   } catch (err) {
     return res.status(404).json({ message: "No inventory data found" });
   }
@@ -14,8 +22,18 @@ const getInventory = async (req, res) => {
     return res.status(404).json({ message: "No inventory data available" });
   }
 
+  // Map inventory data to include category name and other details
   const inventoryData = inventory.map((inv) => ({
-    product: inv.product.toObject({ getters: true }),
+    product: {
+      id: inv.product._id,
+      productName: inv.product.productName,
+      productCategory: inv.product.productCategory
+        ? inv.product.productCategory.categoryName // Include category name if available
+        : "Unknown Category",
+      unitOfMeasure: inv.product.unitOfMeasure,
+      productImage: inv.product.productImage,
+      productPrice: inv.product.productPrice,
+    },
     lastRestocked: inv.lastRestocked,
     stockSize: inv.quantityInStock,
   }));
